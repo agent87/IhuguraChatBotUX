@@ -1,13 +1,14 @@
 from requests.api import request
 import streamlit as st
 import time
-from translate import translator
+from lib.translate import translator
+from lib.s2t import convert
 
 
 
 SIDEBAR_OPTION_PROJECT_INFO = "Project Info"
-SIDEBAR_OPTION_TEXT_QA = "Text based Q&A Inquiry"
-SIDEBAR_OPTION_SPEECH_QA = "Inquiry by Voice"
+SIDEBAR_OPTION_TEXT_QA = "Type your inquiry"
+SIDEBAR_OPTION_SPEECH_QA = "Upload a recording"
 SIDEBAR_OPTION_MEET_TEAM = "Meet the Team"
 
 SIDEBAR_OPTIONS = [SIDEBAR_OPTION_PROJECT_INFO, SIDEBAR_OPTION_TEXT_QA, SIDEBAR_OPTION_SPEECH_QA, SIDEBAR_OPTION_MEET_TEAM]
@@ -34,18 +35,6 @@ def startup_load():
     status_text.empty()
 
 
-
-
-
-
- #else add the Plate to the database
-
-def respond(img, flow):
-    st.subheader("Bellow are the results of the prediction")
-    st.text("Plate Number: {}")
-    st.text('Vehicle Type: {}')
-
-
 def main():
     st.sidebar.title("Navigation Bar")
     AppMode = st.sidebar.selectbox('Please select from the following',SIDEBAR_OPTIONS)
@@ -66,15 +55,18 @@ def main():
                 pass
     elif AppMode == SIDEBAR_OPTION_SPEECH_QA:
         st.title("Speech enabled Q&A Inquiry")
-        st.info('PRIVACY POLICY: uploaded audio files are never saved or stored. They are held entirely within memory for prediction \
-            and discarded after the final results are displayed. ')
-        f = st.file_uploader("Please Select to Upload an Image", type=['wav', 'mp3' ])
-        if f is not None:
-            img = f.read()
-            st.image(img, 'exit')
-            #tfile = tempfile.NamedTemporaryFile(delete=True)
-            #tfile.write(f.read())
-            st.write('Please wait for the magic to happen! This may take up to a minute.')
+        st.info('PRIVACY POLICY: uploaded audio files are never saved or stored. They are held entirely within memory for prediction and discarded after the final results are displayed. ')
+        audio_file = st.file_uploader("Upload your audio files here", type=['wav', 'mp3' ])
+        if audio_file is not None:
+            st.write('Audio File')
+            st.audio(audio_file)
+            s2t = convert()
+            text = s2t.to_text(audio=audio_file)
+            s2t_header = st.subheader("Speech 2 Text")
+            s2t_text_area = st.text_area("",value=text+"?", disabled=True)
+            response_header = st.subheader("Response")
+            response_text_area = st.text_area("",value="Response", disabled=True)
+
     elif AppMode == SIDEBAR_OPTION_MEET_TEAM:
         st.title("Meet the team behind the system")
         first_column, second_column, third_column= st.beta_columns(3)
