@@ -1,0 +1,4 @@
+googletrans
+streamlit
+requests-html
+selenium
