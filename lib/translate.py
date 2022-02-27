@@ -4,7 +4,7 @@ import json
 
 class translator:
     api_url = "https://translate.googleapis.com/translate_a/single"
-    client = "?client=gtx&dt=t&sl=rw&tl=en"
+    client = "?client=gtx&dt=t"
     dt = "&dt=t"
 
     def __init__(self) -> None:
