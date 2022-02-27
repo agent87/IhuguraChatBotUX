@@ -42,7 +42,11 @@ def main():
 
     if AppMode == SIDEBAR_OPTION_PROJECT_INFO:
         st.title("Ihugure Chatbot")
-        st.text("Ihugure Chatbot is legal .")
+        st.write("""In a 2017 [survey](https://legalaidrwanda.org/IMG/pdf/845_final_narrative_report_2018_2021_.pdf) of 5500 citizens, it was discovered that 27% of respondents had to walk between 30 minutes and an hour to reach the nearest legal aid provider; 16% had to walk between one and three hours; 3% had to travel more than five hours, and only 4% of respondents rated their legal knowledge as "high." and in addition had to  wait to meet with an advocate in person, regardless of the nature of their case or the services they may require.""")
+        st.write("""In addition,  the aspect of iliteracy was also found to be a significant factor in the decision to seek legal aid.""")
+        st.subheader("Project Description")
+        st.write("[Code of Criminal Procedure]()")
+        st.write("")
     elif AppMode == SIDEBAR_OPTION_TEXT_QA:
         st.title("Text based Q&A Inquiry")
         st.text("This is a text based Q&A inquiry")
@@ -65,7 +69,7 @@ def main():
             s2t_header = st.subheader("Speech 2 Text")
             s2t_text_area = st.text_area("",value=text+"?", disabled=True)
             response_header = st.subheader("Response")
-            response_text_area = st.text_area("",value="Response", disabled=True)
+            response_text_area = st.text_area("",value="Umuntu wese ufunze afite uburenganzira bwo kunganirwa mumategeko.", disabled=True)
 
     elif AppMode == SIDEBAR_OPTION_MEET_TEAM:
         st.title("Meet the team behind the system")

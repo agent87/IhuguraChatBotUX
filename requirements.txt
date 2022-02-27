@@ -1,4 +1,3 @@
+pip
 googletrans
 streamlit
-requests-html
-selenium
