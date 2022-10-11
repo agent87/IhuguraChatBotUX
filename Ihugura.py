@@ -1,4 +1,5 @@
-from requests.api import request
+from urllib import response
+import requests
 import streamlit as st
 import time
 from lib.translate import translator
@@ -6,16 +7,20 @@ from lib.s2t import convert
 
 
 
-SIDEBAR_OPTION_PROJECT_INFO = "Project Info"
-SIDEBAR_OPTION_TEXT_QA = "Type your inquiry"
-SIDEBAR_OPTION_SPEECH_QA = "Upload a recording"
+SIDEBAR_OPTION_PROJECT_INFO = "Learn More about the Project"
+SIDEBAR_OPTION_TRY = "Try our Demo!"
 SIDEBAR_OPTION_MEET_TEAM = "Meet the Team"
-
-SIDEBAR_OPTIONS = [SIDEBAR_OPTION_PROJECT_INFO, SIDEBAR_OPTION_TEXT_QA, SIDEBAR_OPTION_SPEECH_QA, SIDEBAR_OPTION_MEET_TEAM]
-
+SIDEBAR_OPTIONS = [SIDEBAR_OPTION_PROJECT_INFO, SIDEBAR_OPTION_TRY, SIDEBAR_OPTION_MEET_TEAM]
 
 
+TRY_SIDEBAR_OPTION_TEXT_QUERY = "Type your Query"
+TRY_SIDEBAR_OPTION_SPEECH_QUERY = "Voice Enabled Query"
+TRY_SIDEBAR_OPTIONS = [TRY_SIDEBAR_OPTION_TEXT_QUERY, TRY_SIDEBAR_OPTION_SPEECH_QUERY]
 
+
+TRY_SIDEBAR_OPTION_EN = "English"
+TRY_SIDEBAR_OPTION_RW = "Kinyarwanda"
+TRY_SIDEBAR_OPTIONS_LANG = [TRY_SIDEBAR_OPTION_EN, TRY_SIDEBAR_OPTION_RW]
 
 #st.cache()
 def startup_load():
@@ -34,6 +39,34 @@ def startup_load():
     progress_bar.empty() 
     status_text.empty()
 
+class request_api:
+    base_url = "http://109.74.203.113/"
+    def text_query_en(self, query, mobile_num):
+        response = requests.get(url=self.base_url+'query/text/en?query={0}&mobile={1}'.format(query,mobile_num))
+
+    def text_query_rw(self, query, mobile_num):
+        response = requests.get(url=self.base_url+'query/text/rw?query={0}&mobile={1}'.format(query,mobile_num))
+
+    def speech_query_rw(self, audio_query, mobile_num):
+        pass
+
+class text_query:
+    def __init__(self, lang):
+        if lang == "EN":
+            st.title("English Q&A")
+            st.text("This is a text based Q&A inquiry")
+            question = st.text_area("Type your question here!", value="", height=10, max_chars=100, key=None, help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
+            submit = st.button('Submit Inquiry')
+        elif lang == "RW":
+            st.title("Kinyarwanda Q&A")
+            st.text("Baza ikibazo ukoresheje amagambo yanditse!")
+            question = st.text_area("Andika ikibazo cyawe aha!", value="", height=10, max_chars=100, key=None, help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
+            submit = st.button('Ohereza Ikibazo Cyawe')
+        else:
+            pass
+
+
+    
 
 def main():
     st.sidebar.title("Navigation Bar")
@@ -47,37 +80,29 @@ def main():
         st.subheader("Project Description")
         st.write("[Code of Criminal Procedure]()")
         st.write("")
-    elif AppMode == SIDEBAR_OPTION_TEXT_QA:
-        st.title("Text based Q&A Inquiry")
-        st.text("This is a text based Q&A inquiry")
-        question = st.text_area("Type your question here", value="", height=None, max_chars=250, key=None, help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
-        if st.button("Submit Inquiry", key=None, help=None, on_click=None, args=None, kwargs=None, disabled=False):
-            if len(question) > 0:
-                response = trans.to_english(text=question)
-                st.text_area("Response",value=response, disabled=True)
+    elif AppMode == SIDEBAR_OPTION_TRY:
+        TryAppMode = st.sidebar.selectbox('Please select from the following',TRY_SIDEBAR_OPTIONS)
+        if TryAppMode ==  TRY_SIDEBAR_OPTION_TEXT_QUERY:
+            TEXT_QUERY_LANG_MODE = st.sidebar.selectbox('Choose a Language', TRY_SIDEBAR_OPTIONS_LANG)
+            if TEXT_QUERY_LANG_MODE == 'English':
+                text_query_ui = text_query('EN')
+            elif TEXT_QUERY_LANG_MODE == 'Kinyarwanda':
+                text_query_ui = text_query('RW')
             else:
-                pass
-    elif AppMode == SIDEBAR_OPTION_SPEECH_QA:
-        st.title("Speech enabled Q&A Inquiry")
-        st.info('PRIVACY POLICY: uploaded audio files are never saved or stored. They are held entirely within memory for prediction and discarded after the final results are displayed. ')
-        audio_file = st.file_uploader("Upload your audio files here", type=['wav', 'mp3' ])
-        if audio_file is not None:
-            st.write('Audio File')
-            st.audio(audio_file)
-            s2t = convert()
-            text = s2t.to_text(audio=audio_file)
-            s2t_header = st.subheader("Speech 2 Text")
-            s2t_text_area = st.text_area("",value=text+"?", disabled=True)
-            response_header = st.subheader("Response")
-            response_text_area = st.text_area("",value="Unable to connect via ssh check console", disabled=True)
+                st.warning('Please choose a language to proceed!')
+        elif TryAppMode ==  TRY_SIDEBAR_OPTION_TEXT_QUERY:
+            text_query_ui = text_query('ENG')
+        
 
+        
     elif AppMode == SIDEBAR_OPTION_MEET_TEAM:
         st.title("Meet the team behind the system")
-        first_column, second_column, third_column= st.beta_columns(3)
         st.success('Hope you had a great time :)')
         st.write('Please feel free to connect with us on Linkedin!')
         expandar_linkedin = st.beta_expander('Contact Information')
         expandar_linkedin.write('Arnaud: https://www.linkedin.com/in/arnaud-kayonga-5910a813a/')
+        expandar_linkedin.write('Arlene: https://www.linkedin.com/in/arnaud-kayonga-5910a813a/')
+        expandar_linkedin.write('Bella: https://www.linkedin.com/in/arnaud-kayonga-5910a813a/')
 
 
 
