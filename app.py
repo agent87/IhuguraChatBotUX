@@ -32,13 +32,7 @@ class SpeechQueryUI:
     def __init__(self):
         self.description = st.title("Kinyarwanda Q&A")
         self.description = st.text("This is a Speech based Q&A inquiry")
-        input_col, sample_question_button_col = st.columns(2)
-        with input_col:
-            self.record = st.file_uploader("Upload your record file here!", accept_multiple_files=False, type=['mp3', 'wav'], key=None, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
-        with sample_question_button_col:
-            self.sample_question = st.button("Sample Record")
-            if self.sample_question:
-                self.question = "bi"
+        self.record = st.file_uploader("Upload your record file here!", accept_multiple_files=False, type=['mp3', 'wav'], key=None, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
         self.AdvancedSettings = self.AdvancedSettings()
         self.submit = st.button('Submit Inquiry')
 
@@ -64,13 +58,7 @@ class TextQueryUI:
     def __init__(self):
         self.description = st.title("Kinyarwanda Q&A")
         self.description = st.text("This is a text based Q&A inquiry")
-        input_col, sample_question_button_col = st.columns(2)
-        with input_col:
-            self.question = st.text_input("Type your question here!", value="", max_chars=100, key='TextQueryInput', help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
-        with sample_question_button_col:
-            self.sample_question = st.button("Sample Question", on_click=self.fill_question)
-            if self.sample_question:
-                st.session_state['TextQueryInput'] = "bi"
+        self.question = st.text_input("Type your question here!", value="", max_chars=100, key='TextQueryInput', help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
         self.AdvancedSettings = self.AdvancedSettings()
         self.submit = st.button('Submit Inquiry')
 
