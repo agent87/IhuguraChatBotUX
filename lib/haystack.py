@@ -1,4 +1,3 @@
-import re
 from haystack.document_stores import InMemoryDocumentStore
 from haystack.utils import clean_wiki_text, convert_files_to_docs
 from haystack.nodes import TfidfRetriever
@@ -26,10 +25,10 @@ class pipe:
     def query(self, question, top_doc : int = 10, top_ans : int = 10):
         return self.pipe.run(query=question, params={"Retriever": {"top_k": top_doc}, "Reader": {"top_k": top_ans}})
 
-    def filter_answer_by_score(self, prediction):
-        answers = []
+    def filter_answer_by_score(self, prediction, threshold : float = 0.8):
+        answers : list = list()
         for ans in dict(prediction)['answers']:
-            if ans.to_dict()['score'] > float(0.8):
+            if ans.to_dict()['score'] > float(threshold):
                 answers.append(ans.to_dict())
 
         return answers
