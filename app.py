@@ -1,13 +1,29 @@
 import streamlit as st 
-from lib import haystack
+import requests
+import json
+
+
+class Documentation:
+    def __init__(self):
+        st.title("Documentation")
+        st.text("This is the project info page")
+
+
+class getTexQueryResponse:
+    def __init__(self, query : str, advancedSettings: tuple) -> None:
+        response = requests.get(f"http://127.0.0.1:8787/?question={query}&top_doc={advancedSettings[0]}&top_ans={advancedSettings[1]}&threshold={advancedSettings[2]/100}").content
+        response = json.loads(response)
 
 
 
-class getResponse:
-    def __init__(self, query, advancedSettings):
-        query = query
-        advancedSettings = advancedSettings
-        self.response = self.getResponse()
+    def displayResponse(self, response : dict):
+        st.title("Response")
+        if len(response['answers']) == 0:
+            st.warning("No answer found! Try to change the advanced parameters e.g Lower the Threshold.")
+        else:
+            st.text("Answers:")
+            for ans in response['answers']:
+                st.text(f"{ans['answer']} (Confidence: {ans['score']})")
 
     
 
@@ -16,13 +32,21 @@ class SpeechQueryUI:
     def __init__(self):
         self.description = st.title("Kinyarwanda Q&A")
         self.description = st.text("This is a Speech based Q&A inquiry")
-        self.record = st.file_uploader("Upload your record file here!", accept_multiple_files=False, type=['mp3', 'wav'], key=None, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
+        input_col, sample_question_button_col = st.columns(2)
+        with input_col:
+            self.record = st.file_uploader("Upload your record file here!", accept_multiple_files=False, type=['mp3', 'wav'], key=None, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
+        with sample_question_button_col:
+            self.sample_question = st.button("Sample Record")
+            if self.sample_question:
+                self.question = "bi"
         self.AdvancedSettings = self.AdvancedSettings()
         self.submit = st.button('Submit Inquiry')
 
         if self.submit:
             st.text('Play your record!')
             self.playbackRecord()
+            response = getTexQueryResponse('bi', (self.AdvancedSettings))
+            response.displayResponse()
 
     def AdvancedSettings(self):
         with st.expander("Advanced Parameters"):
@@ -40,12 +64,22 @@ class TextQueryUI:
     def __init__(self):
         self.description = st.title("Kinyarwanda Q&A")
         self.description = st.text("This is a text based Q&A inquiry")
-        self.question = st.text_area("Type your question here!", value="", height=10, max_chars=100, key=None, help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
+        input_col, sample_question_button_col = st.columns(2)
+        with input_col:
+            self.question = st.text_input("Type your question here!", value="", max_chars=100, key='TextQueryInput', help=None, on_change=None, args=None, kwargs=None, placeholder=None, disabled=False)
+        with sample_question_button_col:
+            self.sample_question = st.button("Sample Question", on_click=self.fill_question)
+            if self.sample_question:
+                st.session_state['TextQueryInput'] = "bi"
         self.AdvancedSettings = self.AdvancedSettings()
         self.submit = st.button('Submit Inquiry')
 
         if self.submit:
-            st.text('Your question is: ' + self.question)
+            st.text('Your query is: ' + self.question)
+
+            #fetch response
+            response = getTexQueryResponse(self.question, (self.AdvancedSettings))
+            response.displayResponse()
             
 
     def AdvancedSettings(self):
@@ -55,6 +89,9 @@ class TextQueryUI:
             ConfidenceThreshold : int = st.slider("Confidence Threshold(Filter answers with higher confidence score!)", min_value=0, max_value=100, value=80, step=1, format=None, key=None, help=None, on_change=None, args=None, kwargs=None, disabled=False, label_visibility="visible")
         
         return NumberofDocumentstoSearch, NumberofResults, ConfidenceThreshold
+
+    def fill_question(self):
+        self.question = "bi"
 
 
 class Sidebar:
@@ -92,7 +129,7 @@ class Sidebar:
 
     def SupportBanner(self):
         st.sidebar.title('Support')
-        st.sidebar.info("If you want to reward my work, I'd love a cup of coffee [google.com] from you. Thanks!")
+        st.sidebar.info("If you want to reward my work, I'd love a cup of [coffee](https://www.buymeacoffee.com/sangman99) from you. Thanks!")
 
 
 
@@ -104,4 +141,5 @@ def main():
 
 
 if __name__ == "__main__":
+    #initiate the pipeline
     main()

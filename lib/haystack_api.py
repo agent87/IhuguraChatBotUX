@@ -5,6 +5,11 @@ from haystack.nodes import FARMReader
 from haystack.pipelines import ExtractiveQAPipeline
 
 
+from fastapi import FastAPI
+import uvicorn
+
+app = FastAPI()
+
 
 class pipe:
     def __init__(self):
@@ -40,10 +45,19 @@ class pipe:
             del doc['content']
             docs.append(doc)
 
-    def fetch(self, question, top_doc : int = 10, top_ans : int = 10):
+    def fetch(self, question, top_doc : int = 10, top_ans : int = 10, threshold : float = 0.8):
         prediction = self.query(question, top_doc, top_ans)
-        answers = self.filter_answer_by_score(prediction)
+        answers = self.filter_answer_by_score(prediction, threshold)
         docs = self.show_top_docs(prediction)
         return answers, docs
 
 
+@app.get("/")
+def respond(question : str, top_doc : int = 10, top_ans : int = 10, threshold : float = 0.1):
+    print(question)
+    answers, docs = QueryPipeline.fetch(question, top_doc, top_ans, threshold)
+    return {"answers":answers, "docs" :docs}
+
+if __name__ == "__main__":
+    QueryPipeline = pipe()
+    uvicorn.run(app, host="127.0.0.1", port=8787)
