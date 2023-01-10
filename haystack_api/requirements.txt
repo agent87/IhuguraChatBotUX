@@ -1,3 +1,2 @@
---upgrade pip
-'farm-haystack[all]'
-fastapi=0.88.0 
+farm-haystack
+fastapi

@@ -11,8 +11,6 @@ import uvicorn
 app = FastAPI()
 
 
-QueryPipeline = pipe()
-
 
 class pipe:
     def __init__(self):

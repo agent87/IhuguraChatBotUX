@@ -1,5 +1,5 @@
 # This file is used to build the docker image for the frontend
-FROM PYTHON:3.7
+FROM python:3.9
 
 #Set the working directory
 WORKDIR /home
@@ -7,8 +7,13 @@ WORKDIR /home
 #Install the requirements
 COPY requirements.txt .
 
+RUN pip3 install --upgrade pip
+
 #Install the requirements
 RUN pip install -r requirements.txt
+
+#Expose port
+EXPOSE 8080
 
 #Copy the app.py file
 COPY . .
