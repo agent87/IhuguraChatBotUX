@@ -11,6 +11,9 @@ import uvicorn
 app = FastAPI()
 
 
+QueryPipeline = pipe()
+
+
 class pipe:
     def __init__(self):
         #Initiate the doc store
@@ -51,6 +54,8 @@ class pipe:
         docs = self.show_top_docs(prediction)
         return answers, docs
 
+#Initiate the Query Pipeline        
+QueryPipeline = pipe()
 
 @app.get("/")
 def respond(question : str, top_doc : int = 10, top_ans : int = 10, threshold : float = 0.1):
@@ -58,6 +63,3 @@ def respond(question : str, top_doc : int = 10, top_ans : int = 10, threshold : 
     answers, docs = QueryPipeline.fetch(question, top_doc, top_ans, threshold)
     return {"answers":answers, "docs" :docs}
 
-if __name__ == "__main__":
-    QueryPipeline = pipe()
-    uvicorn.run(app, host="127.0.0.1", port=8787)
