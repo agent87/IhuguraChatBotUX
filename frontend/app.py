@@ -4,9 +4,10 @@ import json
 
 
 class Documentation:
-    def __init__(self):
+    def Page():
         st.title("Documentation")
         st.text("This is the project info page")
+        st.write("""In a 2017 survey of 5500 citizens, it was discovered that 27% of respondents had to walk between 30 minutes and an hour to reach the nearest legal aid provider; 16% had to walk between one and three hours; 3% had to travel more than five hours, and only 4% of respondents rated their legal knowledge as "high." and in addition had to  wait to meet with an advocate in person, regardless of the nature of their case or the services they may require.""")
 
 
 class getTexQueryResponse:
@@ -95,6 +96,7 @@ class Sidebar:
 
         if self.PRIMARY_OPTONS == "Documentation":
             self.NAVBAR_MODE_PRIMARY = "Documentation"
+            Documentation.Page()
         elif self.PRIMARY_OPTONS == "Try the Chatbot!":
             self.NAVBAR_MODE_PRIMARY = "Chatbot"
             self.QUERY_MODE = st.sidebar.selectbox('Select a mode!', self.SIDEBAR_OPTION_QUERY_MODE)

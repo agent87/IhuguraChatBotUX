@@ -1,2 +1,0 @@
-streamlit
-fastapi=0.88.0 

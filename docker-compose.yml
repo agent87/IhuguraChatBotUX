@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  streamlit:
+    build: ./frontend
+    ports:
+      - 8501:80
+  
+  haystack:
+    build: ./haystack_api
+    ports:
+      - 8502:80
+
+  
