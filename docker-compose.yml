@@ -4,11 +4,11 @@ services:
   streamlit:
     build: ./frontend
     ports:
-      - 8501:80
+      - 8501:8080
   
   haystack:
     build: ./haystack_api
     ports:
-      - 8502:80
+      - 8502:8080
 
   
